@@ -3,7 +3,8 @@ import { createServer as createViteServer } from "vite";
 import Database from "better-sqlite3";
 import path from "path";
 
-const db = new Database("bookings.db");
+const dbPath = process.env.NODE_ENV === 'production' ? '/data/bookings.db' : 'bookings.db';
+const db = new Database(dbPath);
 
 // Initialize database
 db.exec(`
@@ -70,10 +71,10 @@ const seedData = () => {
 
   const tipCount = db.prepare("SELECT COUNT(*) as count FROM tips").get() as any;
   if (tipCount.count === 0) {
-    const insertTip = db.prepare("INSERT INTO tips (title, excerpt, content, category, date, image) VALUES (?, ?, ?, ?, ?, ?)");
-    insertTip.run("أهمية التمدد الصباحي", "تعرف على كيفية تحسين مرونة جسمك في 5 دقائق فقط كل صباح.", "التمدد الصباحي يساعد على تنشيط الدورة الدموية وتقليل تيبس المفاصل...", "تمارين", "2026-02-20", "https://picsum.photos/seed/stretch/800/600");
-    insertTip.run("وضعية الجلوس الصحيحة", "كيف تتجنب آلام الظهر والرقبة أثناء العمل المكتبي الطويل.", "الجلوس لفترات طويلة يتطلب وضعية تدعم العمود الفقري بشكل سليم...", "نصائح", "2026-02-18", "https://picsum.photos/seed/posture/800/600");
-    insertTip.run("تمارين الرقبة والأكتاف", "تمارين بسيطة وفعالة لتخفيف التشنجات العضلية في منطقة الرقبة والأكتاف.", "تعتبر تمارين إطالة الرقبة وتقوية عضلات الأكتاف ضرورية جداً لمن يقضون ساعات طويلة أمام الشاشات...", "تمارين", "2026-02-21", "https://picsum.photos/seed/neck-shoulder/800/600");
+    const insertTip = db.prepare("INSERT INTO tips (title, excerpt, content, category, date, image, video_url, audio_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    insertTip.run("أهمية التمدد الصباحي", "تعرف على كيفية تحسين مرونة جسمك في 5 دقائق فقط كل صباح.", "التمدد الصباحي يساعد على تنشيط الدورة الدموية وتقليل تيبس المفاصل...", "تمارين", "2026-02-20", "https://picsum.photos/seed/stretch/800/600", "https://www.youtube.com/watch?v=g_tea8ZNk5A", null);
+    insertTip.run("وضعية الجلوس الصحيحة", "كيف تتجنب آلام الظهر والرقبة أثناء العمل المكتبي الطويل.", "الجلوس لفترات طويلة يتطلب وضعية تدعم العمود الفقري بشكل سليم...", "نصائح", "2026-02-18", "https://picsum.photos/seed/posture/800/600", null, null);
+    insertTip.run("تمارين الرقبة والأكتاف", "تمارين بسيطة وفعالة لتخفيف التشنجات العضلية في منطقة الرقبة والأكتاف.", "تعتبر تمارين إطالة الرقبة وتقوية عضلات الأكتاف ضرورية جداً لمن يقضون ساعات طويلة أمام الشاشات...", "تمارين", "2026-02-21", "https://picsum.photos/seed/neck-shoulder/800/600", "https://www.youtube.com/watch?v=J-05m7E9628", null);
   }
 
   const academyCount = db.prepare("SELECT COUNT(*) as count FROM academy_info").get() as any;
